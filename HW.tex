@@ -1,0 +1,132 @@
+% !TEX program = xelatex
+\documentclass[]{article}
+\usepackage{commons/course}
+
+\begin{document}
+\printheader
+
+\section*{سوال اول}
+\subsection*{قسمت اول}
+\begin{gather*}
+    S \rightarrow 0S0 | 0S1 | 1S0 | 1S1 | 0
+\end{gather*}
+\subsection*{قسمت دوم}
+\begin{gather*}
+    S \rightarrow 0S0 | 1S1 | \epsilon
+\end{gather*}
+\subsection*{قسمت سوم}
+عبارت
+$R_i$
+یعنی اینکه به
+$i$
+0 دیگر نیاز داریم
+که شرط مسئله ارضا شود.
+\begin{align*}
+    S &\rightarrow R_3\\
+    R_3 &\rightarrow 1R_3 | 0R_2\\
+    R_2 &\rightarrow 1R_2 | 0R_1\\
+    R_1 &\rightarrow 1R_1 | 0R_0\\
+    R_0 &\rightarrow 1R_0 | 0R_0 | \epsilon\\
+\end{align*}
+\section*{سوال دوم}
+\begin{enumerate}
+    \item رشته‌هایی که طول آن‌ها فرد است.
+    \item $1^a 0^b, \quad a, b \ge 0$
+\end{enumerate}
+\section*{سوال سوم}
+\subsection*{قسمت اول}
+برای اینکه مورد خواسته شده در سوال را چک کنیم کافی است برای هر قانون در گرامر شرط‌های زیر را چک
+بکنیم: به ازای هر قانون
+$A \rightarrow \alpha | \beta$
+باید:
+\begin{enumerate}
+    \item $\operatorname{First}(\alpha) \cap \operatorname{First}(\beta) = \emptyset$
+    \item در صورتی که $\alpha \implies^* \epsilon$ آنگاه  $\operatorname{Follow}(\alpha) \cap \operatorname{First}(\beta) = \emptyset$
+    \item فقط یکی از عبارت $\alpha \implies^* \epsilon$ و $\beta \implies^* \epsilon$ درست است.
+\end{enumerate}
+پس در ابتدا
+\lr{First}
+تمامی
+\lr{non terminal}ها
+را پیدا می‌کنیم. (مشخص است که \lr{First} همه‌ی \lr{terminal}ها خودشان هستند.)
+\begin{align*}
+    \operatorname{First}(S) &= \{a, b\}\\
+    \operatorname{First}(A) &= \{a, b\}\\
+    \operatorname{First}(B) &= \{\epsilon, a, b\}\\
+    \operatorname{First}(C) &= \{b, a\}\\
+    \operatorname{First}(D) &= \{d\}
+\end{align*}
+اما در همان قاعده‌ی اول به مشکل می‌خوریم. چرا که
+$\operatorname{First}(AaB)$ و $\operatorname{First}(aAC)$
+هر جفتشان
+$a$
+را دارند و در نتیجه نمی‌توان که پیش بینی کرد که باید کدام قاعده را باز کرد.
+\subsection*{قسمت دوم}
+در ابتدا از قاعده‌ی آخر شروع می‌کنیم که کلا قاعده‌ی اضافی است و هیچ‌جایی استفاده نمی‌شود.
+این قاعده عملا زبان
+$d^n$
+است که پس می‌توان صرفا آن را به صورت
+$D \rightarrow dD', D' \rightarrow dD' | \epsilon$
+نوشت. اما به یک نکته‌ی دیگر توجه کنید که اگر از قواعد 2 تا 4 به ترتیب استفاده بکنیم عملا
+در یک حلقه می‌افتیم چرا که
+$A$
+در ابتدای رشته دوباره تکرار می‌شود. برای این که این مشکل را درست کنیم اجازه
+دهید که کمی متفاوت بنویسیم قانون شماره 2 را و
+$B$
+را باز کنیم.
+\begin{gather*}
+    A \rightarrow a | CCbCbC | bC
+\end{gather*}
+حال اگر
+$C$
+را باز کنیم داریم:
+\begin{gather*}
+    A \rightarrow a | AbcCbCbC | bCbCbC | bC
+\end{gather*}
+همان طور که می‌بینید
+\lr{left recursion}
+خودش را نشان داد. حال برای حذف آن کافی است که از قواعد زیر استفاده بکنیم:
+\begin{align*}
+    A &\rightarrow aA' | bCbCbCA' | bCA'\\
+    A' &\rightarrow bcCbCbCA' | \epsilon
+\end{align*}
+حال به قاعده‌ی
+$B$
+نگاه می‌کنیم. در صورتی که از قاعده اولش استفاده بکنیم و دوباره
+$C$
+را نیز باز بکنیم به
+$A$
+می‌رسیم و در نتیجه هیچ چپ گردی وجود ندارد. پس قوانین ما بعد از حذف چپ گردی برابر است با:
+\begin{align*}
+    S &\rightarrow AaB | aAC\\
+    A &\rightarrow aA' | bCbCbCA' | bCA'\\
+    A' &\rightarrow bcCbCbCA' | \epsilon\\
+    B &\rightarrow CCbC | \epsilon\\
+    C &\rightarrow Abc | b\\
+    D &\rightarrow dD'\\
+    D' &\rightarrow dD' | \epsilon
+\end{align*}
+\section*{سوال چهارم}
+\section*{سوال پنجم}
+\subsection*{قسمت اول}
+در ابتدا بدون ساده سازی تمامی قوانین را می‌نویسیم:
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.5]{figure/5-1-A.png}
+    \includegraphics[scale=0.5]{figure/5-1-B.png}
+    \includegraphics[scale=0.5]{figure/5-1-C.png}
+\end{figure}
+حال برای ساده سازی هم در ابتدا سعی می‌کنیم حالات تکراری را حذف کنیم.
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.5]{figure/5-1-A-2.png}
+    \includegraphics[scale=0.5]{figure/5-1-B-2.png}
+    \includegraphics[scale=0.5]{figure/5-1-C-2.png}
+\end{figure}
+حال از پایین به بالا جایگزاری می‌کنیم. یعنی هر جا در نمودار دوم
+$C$
+دیدیم
+\lr{transition diagram}
+آن را قرار می‌دهیم.
+\section*{سوال ششم}
+\end{document}
