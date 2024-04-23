@@ -1,4 +1,6 @@
 # Mostly from https://github.com/PranayT17/Finding-FIRST-and-FOLLOW-of-given-grammar/blob/master/first_follow.py
+import copy
+
 EPSILON = "ϵ"
 
 def is_terminal(input: str) -> bool:
@@ -44,14 +46,10 @@ class Rules:
         self.firsts.clear()
         # For each left hand side run first
         for rule in self.rules:
-            self.firsts[rule.left] = self.first(rule.left)
+            self.firsts[rule.left] = self.first([rule.left])
 
-    def first(self, symbols: str) -> set[str]:
-        if symbols in self.firsts:
-            return self.firsts[symbols]
-        if is_terminal(symbols):
-            return set([symbols])
-        # Check multi char strings
+    def first(self, symbols: list[str]) -> set[str]:
+        # Check multi char symbols
         if len(symbols) != 1:
             result: set[str] = set()
             for symbol in symbols:
@@ -63,10 +61,15 @@ class Rules:
                 if not has_epsilon:
                     break
             return result
+        # Single symbol
+        if symbols[0] in self.firsts:
+            return self.firsts[symbols[0]]
+        if is_terminal(symbols):
+            return set([symbols])
         # Check all right hand sides of this non terminal
         result: set[str] = set()
         for rule in self.rules:
-            if rule.left != symbols:
+            if rule.left != symbols[0]:
                 continue
             # Add firsts of each char in string
             for right in rule.rights:
@@ -94,9 +97,19 @@ class Rules:
         for rule in self.rules:
             result += str(rule) + "\n"
         return result
-    
+
+def left_factor(rules: Rules) -> Rules:
+    rules = copy.deepcopy(rules)
+    rules.follows.clear()
+    rules.firsts.clear()
+    for rule in rules.rules:
+        # TODO
+        pass
+    return rules
+
 rules = Rules.read_from_file("2-grammar.txt")
 rules.calculate_firsts()
 print(rules)
 print(rules.firsts)
-print(rules.first("BbC"))
+print(rules.first(["B", "b", "C"]))
+print(left_factor(rules))
