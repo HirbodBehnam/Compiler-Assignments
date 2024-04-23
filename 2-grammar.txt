@@ -1,0 +1,4 @@
+S -> a a B | a A C
+A -> B b C | a
+B -> C C b C | ϵ
+C -> a b c | b

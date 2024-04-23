@@ -50,59 +50,102 @@ $A \rightarrow \alpha | \beta$
 \lr{non terminal}ها
 را پیدا می‌کنیم. (مشخص است که \lr{First} همه‌ی \lr{terminal}ها خودشان هستند.)
 \begin{align*}
-    \operatorname{First}(S) &= \{a, b\}\\
+    \operatorname{First}(S) &= \{a\}\\
     \operatorname{First}(A) &= \{a, b\}\\
     \operatorname{First}(B) &= \{\epsilon, a, b\}\\
     \operatorname{First}(C) &= \{b, a\}\\
     \operatorname{First}(D) &= \{d\}
 \end{align*}
 اما در همان قاعده‌ی اول به مشکل می‌خوریم. چرا که
-$\operatorname{First}(AaB)$ و $\operatorname{First}(aAC)$
+$\operatorname{First}(aaB)$ و $\operatorname{First}(aAC)$
 هر جفتشان
 $a$
-را دارند و در نتیجه نمی‌توان که پیش بینی کرد که باید کدام قاعده را باز کرد.
+هستند و در نتیجه نمی‌توان که پیش بینی کرد که باید کدام قاعده را باز کرد.
 \subsection*{قسمت دوم}
 در ابتدا از قاعده‌ی آخر شروع می‌کنیم که کلا قاعده‌ی اضافی است و هیچ‌جایی استفاده نمی‌شود.
 این قاعده عملا زبان
 $d^n$
 است که پس می‌توان صرفا آن را به صورت
 $D \rightarrow dD', D' \rightarrow dD' | \epsilon$
-نوشت. اما به یک نکته‌ی دیگر توجه کنید که اگر از قواعد 2 تا 4 به ترتیب استفاده بکنیم عملا
-در یک حلقه می‌افتیم چرا که
-$A$
-در ابتدای رشته دوباره تکرار می‌شود. برای این که این مشکل را درست کنیم اجازه
-دهید که کمی متفاوت بنویسیم قانون شماره 2 را و
-$B$
-را باز کنیم.
-\begin{gather*}
-    A \rightarrow a | CCbCbC | bC
-\end{gather*}
-حال اگر
-$C$
-را باز کنیم داریم:
-\begin{gather*}
-    A \rightarrow a | AbcCbCbC | bCbCbC | bC
-\end{gather*}
-همان طور که می‌بینید
+نوشت. حال نکته‌ای که باید به آن توجه بکنید این است که بقیه‌ی قاعده‌ها
 \lr{left recursion}
-خودش را نشان داد. حال برای حذف آن کافی است که از قواعد زیر استفاده بکنیم:
+ندارند. حتی اگر قاعده‌ها را دنبال نیز بکنیم باز هم به هیچ
+\lr{let recursion}ای
+نمی‌رسیم چرا که از سمت چپ نمی‌توان یک
+\lr{loop}
+زد در
+\lr{non terminal}ها.
+حال با این موضوع سعی می‌کنیم که با فاکتورگیری از گرامر آن را
+predictive
+کنیم. در ابتدا دقت کنید که در قانون دوم هر دو طرف می‌توانند که با
+$a$
+شروع شوند. چرا که می‌توان
+$B$ را به $C$ برد و $C$ را به $abc$.
+پس عملا با بازنوسی داریم:
+\begin{gather*}
+    A \rightarrow abcCbCbC | bCbCbC | bC | a
+\end{gather*}
+پس در اینجا
+$a$ و $b$
+را فاکتور می‌گیریم.
 \begin{align*}
-    A &\rightarrow aA' | bCbCbCA' | bCA'\\
-    A' &\rightarrow bcCbCbCA' | \epsilon
+    A  &\rightarrow aA' | bCA''\\
+    A' &\rightarrow bcCbCbC | \epsilon\\
+    A'' &\rightarrow bCbC | \epsilon
 \end{align*}
-حال به قاعده‌ی
-$B$
-نگاه می‌کنیم. در صورتی که از قاعده اولش استفاده بکنیم و دوباره
-$C$
-را نیز باز بکنیم به
-$A$
-می‌رسیم و در نتیجه هیچ چپ گردی وجود ندارد. پس قوانین ما بعد از حذف چپ گردی برابر است با:
+همان طور که مشاهده می‌شود حال سمت راست قواعد درست شده قابل
+\lr{prediction}
+هستند. حال سراغ قاعده‌ی
+$S$
+می‌رویم و
+$a$
+را فاکتور می‌گیریم.
 \begin{align*}
-    S &\rightarrow AaB | aAC\\
-    A &\rightarrow aA' | bCbCbCA' | bCA'\\
-    A' &\rightarrow bcCbCbCA' | \epsilon\\
+    S &\rightarrow aS'\\
+    S' &\rightarrow aB | AC
+\end{align*}
+اما هنوز کار ما تمام نشده است چرا که
+$\operatorname{First}(aB)$ و $\operatorname{First}(AC)$
+هر دو
+$a$
+دارند. در ابتدا دقت کنید که
+$S' \rightarrow aB | aA'C | bCA''C$
+پس کافی است که یک فاکتور گیری دیگر از
+$a$
+داشته باشیم:
+\begin{align*}
+    S &\rightarrow aS'\\
+    S' &\rightarrow aS'' | bCA''C\\
+    S'' &\rightarrow B | A'C
+\end{align*}
+حال
+$B$ و $A'$
+را باز می‌کنیم:
+\begin{gather*}
+    S'' \rightarrow CCbC | bcCbCbCC | C | \epsilon
+\end{gather*}
+در نهایت می‌توان
+$S''$
+را به صورت زیر نوشت:
+\begin{align*}
+    S'' &\rightarrow abcCbC | bCbC | bcCbCbCC | abc | b | \epsilon\\
+    &\implies\\
+    S'' &\rightarrow abcS''' | bS'''' | \epsilon\\
+    S''' &\rightarrow CbC | \epsilon\\
+    S'''' &\rightarrow CbC | cCbCbCC | \epsilon
+\end{align*}
+پس در نهایت قوانین ما برابر هستند با:
+\begin{align*}
+    S &\rightarrow aS'\\
+    S' &\rightarrow aS'' | bCA''C\\
+    S'' &\rightarrow abcS''' | bS'''' | \epsilon\\
+    S''' &\rightarrow CbC | \epsilon\\
+    S'''' &\rightarrow CbC | cCbCbCC | \epsilon\\
+    A  &\rightarrow aA' | bCA''\\
+    A' &\rightarrow bcCbCbC | \epsilon\\
+    A'' &\rightarrow bCbC | \epsilon\\
     B &\rightarrow CCbC | \epsilon\\
-    C &\rightarrow Abc | b\\
+    C &\rightarrow abc | b\\
     D &\rightarrow dD'\\
     D' &\rightarrow dD' | \epsilon
 \end{align*}
