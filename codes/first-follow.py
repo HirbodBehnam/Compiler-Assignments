@@ -3,9 +3,10 @@ import copy
 
 EPSILON = "ϵ"
 EOF = "$"
+DOT = "•"
 
 def is_terminal(input: str) -> bool:
-    return input == EPSILON or input[0].islower()
+    return not input[0].isupper()
 
 class Rule:
     def __init__(self, left: str, rights: list[list[str]]):
@@ -26,6 +27,7 @@ class Rules:
         self.firsts: dict[str, set[str]] = {}
         self.follows: dict[str, set[str]] = {}
     
+    @staticmethod
     def read_from_file(filename: str):
         rules: list[Rule] = []
         starting_symbol = None
@@ -85,21 +87,22 @@ class Rules:
                                 changed = changed or (new_follows != self.follows[symbol])
                                 self.follows[symbol] = new_follows
                                 # If first of beta had epsilon, add follow of left hand side as well
-                                new_follows = self.follows[symbol].union(self.follows[rule.left])
-                                changed = changed or (new_follows != self.follows[symbol])
-                                self.follows[symbol] = new_follows
+                                if has_epsilon:
+                                    new_follows = self.follows[symbol].union(self.follows[rule.left])
+                                    changed = changed or (new_follows != self.follows[symbol])
+                                    self.follows[symbol] = new_follows
 
             # Check if everything is stable or not
             if not changed:
                 break
 
     def first(self, symbols: list[str]) -> set[str]:
-        assert len(symbols) != 0
+        assert len(symbols) != 0, "Length of symbols should not be zero"
+        result: set[str] = set()
         # Check multi char symbols
         if len(symbols) != 1:
-            result: set[str] = set()
             for symbol in symbols:
-                symbol_first = self.first(symbol)
+                symbol_first = self.first([symbol])
                 has_epsilon = EPSILON in symbol_first
                 if has_epsilon:
                     symbol_first.remove(EPSILON)
@@ -110,10 +113,9 @@ class Rules:
         # Single symbol
         if symbols[0] in self.firsts:
             return self.firsts[symbols[0]]
-        if is_terminal(symbols):
-            return set([symbols])
+        if is_terminal(symbols[0]):
+            return set(symbols)
         # Check all right hand sides of this non terminal
-        result: set[str] = set()
         for rule in self.rules:
             if rule.left != symbols[0]:
                 continue
@@ -125,8 +127,9 @@ class Rules:
                     if symbol == EPSILON:
                         result.add(EPSILON)
                         break
-                    assert symbol != symbols[0], "We don't support left recursion"
-                    symbol_first = self.first(symbol)
+                    if symbol == symbols[0]: # left recursion
+                        break
+                    symbol_first = self.first([symbol])
                     has_epsilon = EPSILON in symbol_first
                     if has_epsilon:
                         symbol_first.remove(EPSILON)

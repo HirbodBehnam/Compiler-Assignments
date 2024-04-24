@@ -1,4 +1,4 @@
 S -> G
-G -> G & H | H | G ~ H | H ~ I
+G -> G & H | H | G ~ H
 H -> H # I | I | H - I
 I -> ( G ) | id | id ( I )
