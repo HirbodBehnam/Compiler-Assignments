@@ -2,6 +2,7 @@
 import copy
 
 EPSILON = "ϵ"
+EOF = "$"
 
 def is_terminal(input: str) -> bool:
     return input == EPSILON or input[0].islower()
@@ -48,7 +49,52 @@ class Rules:
         for rule in self.rules:
             self.firsts[rule.left] = self.first([rule.left])
 
+    def calculate_follows(self):
+        # Pre computation stuff
+        self.follows.clear()
+        self.calculate_firsts()
+        # Add all non terminals to follow
+        for rule in self.rules:
+            self.follows[rule.left] = set()
+        # Add $ to starting symbol
+        self.follows[self.starting_symbol] = set([EOF])
+        # Now for each rule calculate the follow of each non terminal 
+        while True:
+            changed = False
+            # Loop on each rule
+            for rule in self.rules:
+                for right in rule.rights:
+                    for index, symbol in enumerate(right):
+                        if not is_terminal(symbol):
+                            # Is this the last symbol of this rule?
+                            if index == len(right) - 1:
+                                # Add follow of left side to this follow
+                                new_follows = self.follows[symbol].union(self.follows[rule.left])
+                                changed = changed or (new_follows != self.follows[symbol])
+                                self.follows[symbol] = new_follows
+                            else:
+                                # Create beta from whatever is in the right hand side of this symbol
+                                beta = right[index + 1:]
+                                assert len(beta) != 0
+                                first_of_beta = self.first(beta)
+                                has_epsilon = EPSILON in first_of_beta
+                                if has_epsilon:
+                                    first_of_beta.remove(EPSILON)
+                                # Add the first of beta to follows
+                                new_follows = self.follows[symbol].union(first_of_beta)
+                                changed = changed or (new_follows != self.follows[symbol])
+                                self.follows[symbol] = new_follows
+                                # If first of beta had epsilon, add follow of left hand side as well
+                                new_follows = self.follows[symbol].union(self.follows[rule.left])
+                                changed = changed or (new_follows != self.follows[symbol])
+                                self.follows[symbol] = new_follows
+
+            # Check if everything is stable or not
+            if not changed:
+                break
+
     def first(self, symbols: list[str]) -> set[str]:
+        assert len(symbols) != 0
         # Check multi char symbols
         if len(symbols) != 1:
             result: set[str] = set()
@@ -73,24 +119,26 @@ class Rules:
                 continue
             # Add firsts of each char in string
             for right in rule.rights:
+                last_symbol_had_epsilon = False
                 for symbol in right:
+                    last_symbol_had_epsilon = False
                     if symbol == EPSILON:
                         result.add(EPSILON)
                         break
+                    assert symbol != symbols[0], "We don't support left recursion"
                     symbol_first = self.first(symbol)
                     has_epsilon = EPSILON in symbol_first
                     if has_epsilon:
                         symbol_first.remove(EPSILON)
+                        last_symbol_had_epsilon = True
                     result = result.union(symbol_first)
                     if not has_epsilon:
                         break
+                if last_symbol_had_epsilon:
+                    result.add(EPSILON)
         if len(result) == 0:
             raise Exception(f"FUCKUP on {symbols}")
         return result
-    
-    def follow(self, non_terminal: str) -> set[str]:
-        assert not is_terminal(non_terminal)
-        assert len(non_terminal) == 0
     
     def __str__(self) -> str:
         result = ""
@@ -107,9 +155,7 @@ def left_factor(rules: Rules) -> Rules:
         pass
     return rules
 
-rules = Rules.read_from_file("2-grammar.txt")
-rules.calculate_firsts()
-print(rules)
+rules = Rules.read_from_file("5-grammar.txt")
+rules.calculate_follows()
 print(rules.firsts)
-print(rules.first(["B", "b", "C"]))
-print(left_factor(rules))
+print(rules.follows)
