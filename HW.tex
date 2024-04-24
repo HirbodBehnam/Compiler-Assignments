@@ -30,8 +30,8 @@ $i$
 \end{align*}
 \section*{سوال دوم}
 \begin{enumerate}
-    \item رشته‌هایی که طول آن‌ها فرد است.
-    \item $1^a 0^b, \quad a, b \ge 0$
+    \item رشته‌هایی که طول آن‌ها فرد است. به عنوان مثال $a$ یا $aba$
+    \item $1^a 0^b, \quad a, b \ge 0$ به عنوان مثال $110$ یا $110000$
 \end{enumerate}
 \section*{سوال سوم}
 \subsection*{قسمت اول}
@@ -149,6 +149,22 @@ $S''$
     D &\rightarrow dD'\\
     D' &\rightarrow dD' | \epsilon
 \end{align*}
+حال اگر خوب دقت کنیم متوجه می‌شویم که برخی از قوانین ما هیچ وقت نمی‌توانند به آن‌ها رسید.
+به عنوان مثال هیچ وقت به
+$A$
+نمی‌رسیم. پس عملا قوانینی که لازم داریم برابر هستند با:
+\begin{align*}
+    S &\rightarrow aS'\\
+    S' &\rightarrow aS'' | bCA''C\\
+    S'' &\rightarrow abcS''' | bS'''' | \epsilon\\
+    S''' &\rightarrow CbC | \epsilon\\
+    S'''' &\rightarrow CbC | cCbCbCC | \epsilon\\
+    A'' &\rightarrow bCbC | \epsilon\\
+    C &\rightarrow abc | b\\
+\end{align*}
+حال سعی می‌کنیم که توابع را بنویسیم. این کار را من به کمک یک اسکریپت که خودم نوشتم و در کنار سوال
+قرار داده‌ام تولید کرده‌ام.
+\codesample{3-predictive-psudocode.txt}
 \section*{سوال چهارم}
 در ابتدا خود قوانین را به صورت ریاضی می‌نویسیم:
 \begin{align*}

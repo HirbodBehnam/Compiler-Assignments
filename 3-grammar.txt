@@ -1,6 +1,4 @@
-S -> M N
-M -> m N | ϵ
-N -> O P Q
-O -> n O | ϵ
-P -> p P | ϵ
-Q -> q Q | ϵ
+S -> a a B | a A C
+A -> B b C | a
+B -> C C b C | ϵ
+C -> a b c | b

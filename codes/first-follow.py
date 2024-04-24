@@ -143,6 +143,28 @@ class Rules:
             raise Exception(f"FUCKUP on {symbols}")
         return result
     
+    @staticmethod
+    def format_call_predictive_parser(symbols: list[str]):
+        for symbol in symbols:
+            if is_terminal(symbol):
+                print(f"\t\tmatch({symbol})")
+            else:
+                print(f"\t\t{symbol}()")
+
+    def predictive_parser(self):
+        self.calculate_follows()
+        for rule in self.rules:
+            print(f"def {rule.left}():")
+            for right in rule.rights:
+                right_first = self.first(right)
+                print(f"\tif lookahead in {right_first}:")
+                Rules.format_call_predictive_parser(right)
+                print("\t\treturn")
+                if EPSILON in right_first:
+                    print(f"\tif lookahead in {self.follows[rule.left]}: # because of epsilon rule")
+                    print(f"\t\treturn")
+            print("\traise ERROR")
+    
     def __str__(self) -> str:
         result = ""
         for rule in self.rules:
@@ -158,7 +180,5 @@ def left_factor(rules: Rules) -> Rules:
         pass
     return rules
 
-rules = Rules.read_from_file("5-grammar.txt")
-rules.calculate_follows()
-print(rules.firsts)
-print(rules.follows)
+rules = Rules.read_from_file("3-grammar-predictive.txt")
+rules.predictive_parser()
