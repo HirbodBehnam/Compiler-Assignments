@@ -1,6 +1,0 @@
-S -> M N
-M -> m N | ϵ
-N -> O P Q
-O -> n O | ϵ
-P -> p P | ϵ
-Q -> q Q | ϵ

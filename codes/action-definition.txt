@@ -1,0 +1,25 @@
+#evaluate: begin
+    {Here, we at the top of the stack we have the result of condition}
+    push(gettemp()); {This is the address of the result variable}
+    push(i); {We need to backpatch this branch to have the address of the else statement}
+    i++;
+end
+#exit: begin
+    {Here, we at the top of the stack we have the result of the expression}
+    PB[i] = (:=, SS[top - 2], SS[top]); {This will point to the first gettemp() result and use the result of condition}
+    i++;
+    pop(1);
+    PB[SS[top]] = (jpf, SS[top - 2], i + 1); {Backpacth the first branch from the result of the expression. We should also jump to next instruction because the current instruction is going to be an unconditional jump}
+    pop(1);
+    push(i); {We need to backpatch this jump to have the address of the end}
+    i++;
+end
+#exited: begin
+    {Here, we at the top of the stack we have the result of the expression}
+    PB[i] = (:=, SS[top - 2], SS[top]); {This will point to the first gettemp() result and use the result of condition}
+    i++;
+    pop(1);
+    PB[SS[top]] = (jp, i); {Backpatch to jump to current line which is the end of the statement}
+    SS[top - 2] = SS[top - 1]; {Dirty hack: move the address of the result to bottom of stack}
+    pop(2); {Pop backpatch address, and the gettemp()}
+end
