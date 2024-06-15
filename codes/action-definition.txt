@@ -1,25 +1,28 @@
-#evaluate: begin
-    {Here, we at the top of the stack we have the result of condition}
-    push(gettemp()); {This is the address of the result variable}
-    push(i); {We need to backpatch this branch to have the address of the else statement}
-    i++;
+#allocate_result: begin
+    push(gettemp()); {Just allocate a variable for the result in the bottom of stack}
 end
-#exit: begin
-    {Here, we at the top of the stack we have the result of the expression}
-    PB[i] = (:=, SS[top - 2], SS[top]); {This will point to the first gettemp() result and use the result of condition}
+#true_case: begin
+    {Here, we at the top of the stack we have the address of result of true case}
+    {We allocate the result to the temp variable but we may replace it later if the condition is false.}
+    {My main idea was somehow like branch predictors and cmove instruction in Intel assembly}
+    PB[i] = (:=, SS[top - 1], SS[top]);
     i++;
     pop(1);
-    PB[SS[top]] = (jpf, SS[top - 2], i + 1); {Backpacth the first branch from the result of the expression. We should also jump to next instruction because the current instruction is going to be an unconditional jump}
-    pop(1);
-    push(i); {We need to backpatch this jump to have the address of the end}
+end
+#condition: begin
+    {Here, we at the top of the stack we have the address of result of the condition}
+    {However, we cannot write the branch because we need to know the address of the end of the `else`}
+    push(i);
     i++;
 end
 #exited: begin
-    {Here, we at the top of the stack we have the result of the expression}
-    PB[i] = (:=, SS[top - 2], SS[top]); {This will point to the first gettemp() result and use the result of condition}
+    {Here, we at the top of the stack we have the address of result of the `else` expression}
+    {If we have reached here, we assign the result variable to the result of expression in runtime}
+    PB[i] = (:=, SS[top - 3], SS[top]);
     i++;
     pop(1);
-    PB[SS[top]] = (jp, i); {Backpatch to jump to current line which is the end of the statement}
-    SS[top - 2] = SS[top - 1]; {Dirty hack: move the address of the result to bottom of stack}
-    pop(2); {Pop backpatch address, and the gettemp()}
+    {Now we do the backpacthing for the result branch}
+    PB[SS[top]] = (jpt, SS[top - 1], i) {If SS[top - 1] is true jump to i (skip the else)}
+    pop(2); {Pop backpatch address, and the result of evaluation}
+    {We leave the first gettemp() as the result here for next instructions}
 end
