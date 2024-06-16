@@ -8,3 +8,5 @@ S -> B q e
 S -> B
 B -> b B
 B -> ''
+
+a b b d e q a d d d e
