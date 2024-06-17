@@ -510,4 +510,40 @@ action
 \hline
     \end{tabular}
 \end{latin}
+حال برای
+\lr{parse}
+کردن ورودی داده شده داریم:
+\begin{latin}
+    \centering
+    \begin{tabular}{c|c|c}
+        \textbf{Stack} & \textbf{Buffer} & \textbf{Action}\\
+        \hline
+        0 & abbdeqaddde\$ & Shift 2\\
+        0 a 2 & bdeqaddde\$ & Shift 6\\
+        0 a 2 b 6 & bdeqaddde\$ & Shift 6\\
+        0 a 2 b 6 b 6 & deqaddde\$ & Reduce 9\\
+        0 a 2 b 6 b 6 B 11 & deqaddde\$ & Reduce 8\\
+        0 a 2 b 6 B 11 & deqaddde\$ & Reduce 8 \\
+        0 a 2 B 5 & deqaddde\$ & Shift 10 \\
+        0 a 2 B 5 d 10 & eqaddde\$ & Shift 14 \\
+        0 a 2 B 5 d 10 e 14 & qaddde\$ & ERROR! Empty stack... \\
+        0 a 2 & qaddde\$ & ERROR! Empty buffer until e, d, or b \\
+        0 a 2 & ddde\$ & Reduce 9 \\
+        0 a 2 B 5 & dde\$ & Shift 9 \\
+        0 a 2 B 5 d 9 & de\$ & Shift 13 \\
+        0 a 2 B 5 d 9 d 13 & e\$ & Shift 15 \\
+        0 a 2 B 5 d 9 d 13 e 15 & \$ & Reduce 4 \\
+        0 S 1 & \$ & ACCEPT \\
+    \end{tabular}
+\end{latin}
+\section*{سوال چهارم}
+بله جدول و حالت‌ها عوض می‌شود. دو حالت در جدول قسمت قبل وجود داشت که صرفا در
+\lr{lookahead}ها
+تفاوت داشتند:
+(4 و 6) و (8 و 11)
+جدول جدید به صورت زیر است:
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1\textwidth]{figure/Q4.pdf}
+\end{figure}
 \end{document}
