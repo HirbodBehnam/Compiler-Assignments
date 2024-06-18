@@ -546,7 +546,7 @@ action
     \centering
     \includegraphics[width=1\textwidth]{figure/Q4.pdf}
 \end{figure}
-\section*{سوال چهارم}
+\section*{سوال پنجم}
 در ابتدا خود
 \lr{control flow graph}
 را رسم می‌کنیم.
@@ -640,4 +640,67 @@ $m$ و $k$
     \centering
     \includegraphics[width=0.4\textwidth]{figure/Q5-Final.pdf}
 \end{figure}
+\section*{سوال ششم}
+\subsection*{قسمت اول}
+قبل از شروع همان طور که صورت سوال گفته است صرفا رجیستر
+$t0$
+را داریم. برای بقیه‌ی خط‌ها به ترتیب داریم:
+\begin{enumerate}
+    \item $t0, t1$
+    \item $t1, t2$
+    \item $t1, t2$
+    \item $t1, t2$
+    \item $t1, t2, t3$
+    \item $t2, t3, t4$
+    \item $t1, t2$
+    \item $t1, t2, t3$
+    \item $t2, t3, t4$
+    \item $t2, t3, t4$
+    \item $t3, t5$
+    \item $t3, t5, t6$
+    \item $t2, t3, t6$
+    \item $t6, t7$
+    \item $t6, t7$
+    \item $t6$
+    \item $t8$
+    \item $t7$
+    \item $t8$
+    \item $t8$
+    \item $t9$
+\end{enumerate}
+\subsection*{قسمت دوم}
+کافی است که 3 رجیستر داشته باشیم.
+\subsection*{قسمت سوم}
+% https://csacademy.com/app/graph_editor/
+به کمک
+\link{https://csacademy.com/app/graph_editor/}{این سایت}
+گراف را رسم می‌کنیم:
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.5]{figure/Q6-c.png}
+\end{figure}
+\subsection*{قسمت چهارم}
+مانند الگوریتم‌های گفته شده از راسی شروع می‌کنیم که بیشترین تعداد یال را دارد که در اینجا
+$t3$
+است. پس اول
+$t3$
+را قرمز می‌کنیم. در ادامه سراغ
+$t6$
+می‌رویم و آن را به اجبار به رنگی مخالف
+$t3$
+می‌زنیم. در ادامه نیز سراغ
+$t2$
+می‌رویم و این راس را نیز دقیقا یک رنگ جدید می‌زنیم. بقیه‌ی راس‌ها را به صورت رندوم طوری که مشکلی
+پیش نیاید رنگ می‌زنیم. به عنوان مثال یک رنگ بندی به صورت زیر است:
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.5]{figure/Q6-d.png}
+\end{figure}
+\subsection*{قسمت پنجم}
+یک مپینگ به صورت زیر است:
+\begin{enumerate}
+    \item $r1 = \{t0, t3, t7, t8, t9\}$
+    \item $r2 = \{t1, t4, t6\}$
+    \item $r3 = \{t2, t5\}$
+\end{enumerate}
 \end{document}

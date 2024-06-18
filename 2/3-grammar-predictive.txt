@@ -1,0 +1,7 @@
+S -> a S1
+S1 -> a S2 | b C A2 C
+S2 -> a b c S3 | b S4 | ϵ
+S3 -> C b C | ϵ
+S4 -> C b C | c C b C b C C | ϵ
+A2 -> b C b C | ϵ
+C -> a b c | b
