@@ -542,8 +542,102 @@ action
 تفاوت داشتند:
 (4 و 6) و (8 و 11)
 جدول جدید به صورت زیر است:
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     \includegraphics[width=1\textwidth]{figure/Q4.pdf}
+\end{figure}
+\section*{سوال چهارم}
+در ابتدا خود
+\lr{control flow graph}
+را رسم می‌کنیم.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.4\textwidth]{figure/Q5-01-Initial.pdf}
+\end{figure}
+سپس بهبود‌های
+\lr{arithmetic}
+را انجام می‌دهیم. در اینجا صرفا ضرب‌ها را به شیفت تبدیل می‌کنیم.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.4\textwidth]{figure/Q5-02-Arithmetic.pdf}
+\end{figure}
+سپس ترکیب
+\lr{copy propagation}
+با
+\lr{arithmetic}
+را انجام می‌دهیم. این بدین معنی است که ممکن است که در خطی داشته باشیم که
+\lr{b = a + 1}
+و دقیقا در خط بعدی داریم
+\lr{c = b + 1}
+که در اینجا می‌توان نوشت که
+\lr{c = a + 2}
+(البته دقت بکنید که چیزی را حذف نمی‌کنیم. صرفا بازنویسی می‌کنیم.)
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.4\textwidth]{figure/Q5-03-CopyPropagation.pdf}
+\end{figure}
+در نهایت باید
+\lr{dead code}هایی
+را برداریم که متغیر سمت راست حتی یک جا سمت راست در هیچ بلاک دیگر استفاده نشده است. به عنوان 
+مثال می‌توان به متغیر
+$t4$
+اشاره کرد.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.4\textwidth]{figure/Q5-04-DeadCode.pdf}
+\end{figure}
+حال سعی می‌کنیم که
+\lr{global optimization}ها
+را انجام بدهیم. نکته‌ای که در اینجا وجود دارد این است که در کد داده شده به سادگی می‌توان
+مشاهده کرد که اصلا متغیری نداریم که مقدار ثابت را به خود گرفته باشد. به عنوان مثال تنها کاندید‌های
+ما متغیر‌های
+$a$
+است که مشخصا
+$a$
+در بلوک‌های نزیک 21 و قبل از وارد شدن به آن عوض می‌شود و
+$t2$
+اما
+$t2$
+بیشتر اصلا کاندید
+\lr{dead code elimination}
+است چرا که انگار هیچ‌جا از آن استفاده نشده است! حال برای
+\lr{dead code elimination}
+در ابتدا
+$t2$
+را مورد بررسی قرار می‌دهیم. همان طور که در نمودار زیر هم می‌بینید تنها جایی که از آن استفاده شده
+در بلاک ۶ است و در صورتی که الگوریتم اسلاید‌ها را اجرا بکنیم متوجه می‌شویم که کلا تغییری نمی‌کند متغیر
+$t2$
+پس می‌توان آن را در بلاک زیر 6 حذف کرد.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.4\textwidth]{figure/Q5-05-t2-deadcode.pdf}
+\end{figure}
+در ادامه نیز می‌توان دید که
+$b$
+نیز می‌تواند در جایی حذف بشود.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.4\textwidth]{figure/Q5-06-b-deadcode.pdf}
+\end{figure}
+در نهایت نیز می‌توان یک
+\lr{optimization}
+ترکیبی زد که من حس می‌کنم کامپایلر‌های ساده نتواند این را تشخیص دهند. آن هم این است که می‌توان
+متغیر
+$k$
+را حذف کرد. برای این کار
+\lr{constant propagation}
+متغیر‌های
+$m$ و $k$
+را بررسی می‌کنیم و متوجه می‌شویم که جفت این متغیر‌ها در طول کد ثابت هستند. مانند شکل زیر:
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.4\textwidth]{figure/Q5-07-k-lifetime.pdf}
+\end{figure}
+پس می‌توان یک بهینه‌سازی
+\lr{constant folding}
+انجام داد و در نهایت کد به صورت زیر شود:
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.4\textwidth]{figure/Q5-Final.pdf}
 \end{figure}
 \end{document}
